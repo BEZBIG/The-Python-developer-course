@@ -4,16 +4,15 @@
 
 def quarter_determine(x, y):
     if x > 0 and y > 0:
-        print("Первая четверть")
+        return "Первая четверть"
     elif x < 0 and y > 0:
-        print("Вторая четверть")
+        return "Вторая четверть"
     elif x < 0 and y < 0:
-        print("Третья четверть")
+        return "Третья четверть"
     elif x > 0 and y < 0:
-        print("Четвертая четверть")
+        return "Четвертая четверть"
     else:
-        print("Координаты в центре")
-
+        return "Координаты в центре"
 
 print(quarter_determine(-1, 15))
 print(quarter_determine(-5,-5))
