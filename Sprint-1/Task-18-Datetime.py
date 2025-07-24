@@ -25,7 +25,7 @@ def get_days_to_birthday(date_birthday):
     today_year = today.year
     days_to_birthday = date_birthday.replace(year=today_year) - today
 
-    return days_to_birthday
+    return days_to_birthday.days
 
 
 lera_birthday = dt.date(2015, 5, 16)
