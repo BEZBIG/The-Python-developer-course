@@ -23,22 +23,15 @@ maxim_birthday = dt.date(2011, 12, 16)
 
 
 today = dt.date.today()
+today_year = today.year
 
 
-# Обратитесь к значению года
-# текущей даты через точечную нотацию
-today_year = 2025
+maxim_birthday = maxim_birthday.replace(year=today_year)
+lera_birthday = lera_birthday.replace(year=today_year)
 
 
-# Переопределите значение года на текущий
-# для дней рождений ребят
-lera_birthday = dt.date(today_year, 5, 16)
-maxim_birthday = dt.date(today_year, 12, 16)
-
-
-# Получите разницу между днями рождения и текущей датой
-lera_days_left = today - lera_birthday
-maxim_days_left = today - maxim_birthday
+lera_days_left = lera_birthday - today
+maxim_days_left = maxim_birthday - today
 
 
 print(lera_days_left.days)
