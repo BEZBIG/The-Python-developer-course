@@ -9,11 +9,8 @@ urlpatterns = [
     # в файл catalog/urls.py;
     # и если в запросе после 'catalog/' ничего нет (пустая строка),
     # будет вызвана view-функция product_list() из файла catalog/views.py
-    path('', views.product_list),
-
-
-    # Если в запросе после 'catalog/' стоит '1/' или '2/',
-    # будет вызвана view-функция product_detail() из файла catalog/views.py
-    path('1/', views.product_detail),
-    path('2/', views.product_detail),
+    # Имя для URL лучше задавать такое же, как и имя функции. 
+    # Легко запомнить, просто понять:
+    path('catalog/', views.product_list, name='product_list'),  
+    path('catalog/<int:pk>/', views.product_detail, name='product_detail'),
 ] 

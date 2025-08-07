@@ -68,6 +68,11 @@ TEMPLATES = [
     },
 ]
 
+# Дополнительные директории, где собраны статические файлы проекта.
+STATICFILES_DIRS = [
+    BASE_DIR / 'static_dev',
+] 
+
 WSGI_APPLICATION = "acme_project.wsgi.application"
 
 
