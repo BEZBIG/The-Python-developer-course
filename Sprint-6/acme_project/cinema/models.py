@@ -15,7 +15,8 @@ class VideoProduct(models.Model):
     )
 
     directors = models.ManyToManyField(
-        'Director'
+        'Director',
+        through='Partnership'
     )
 
     product_type = models.ForeignKey(
@@ -26,6 +27,9 @@ class VideoProduct(models.Model):
 class Director(models.Model):
     full_name = models.CharField(max_length=128)
 
-class DirectorVideoProduct(models.Model):
+class Partnership(models.Model):
     director = models.ForeignKey(Director, on_delete=models.CASCADE)
     video_product = models.ForeignKey(VideoProduct, on_delete=models.CASCADE)
+
+    date_joined = models.DateField()
+    invite_reason = models.CharField(max_length=300)
