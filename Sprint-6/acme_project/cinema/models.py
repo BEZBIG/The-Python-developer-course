@@ -1,12 +1,30 @@
 from django.db import models
 
-class OriginalTitle(models.Model):
+class BaseModel(models.Model):
+    """
+    Абстрактная модель. 
+    Добавляет к модели дату создания и последнего изменения. 
+    """
+    # Параметр auto_now_add=True означает
+    # "при СОЗДАНИИ записи автоматически записывать в это поле текущее время".
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Параметр auto_now=True означает
+    # "при ИЗМЕНЕНИИ записи автоматически записывать в это поле текущее время".
+    modified_at = models.DateTimeField(auto_now_add=False, auto_now=True)
+
+    # С помощью необязательного внутреннего класса Meta можно добавить
+    # к модели дополнительные настройки. 
+    class Meta:
+        # Эта строка объявляет модель абстрактной:
+        abstract = True 
+
+class OriginalTitle(BaseModel):
     title = models.CharField(max_length=128)
 
-class ProductType(models.Model):
+class ProductType(BaseModel):
     title = models.CharField(max_length=128)
 
-class VideoProduct(models.Model):
+class VideoProduct(BaseModel):
     title = models.CharField(max_length=128)
     original_title = models.OneToOneField(
         OriginalTitle,
@@ -24,10 +42,10 @@ class VideoProduct(models.Model):
         on_delete=models.CASCADE,
     )
 
-class Director(models.Model):
+class Director(BaseModel):
     full_name = models.CharField(max_length=128)
 
-class Partnership(models.Model):
+class Partnership(BaseModel):
     director = models.ForeignKey(Director, on_delete=models.CASCADE)
     video_product = models.ForeignKey(VideoProduct, on_delete=models.CASCADE)
 
