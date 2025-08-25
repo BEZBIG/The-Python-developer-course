@@ -1,65 +1,42 @@
-from django.db import models
+from django.contrib import admin
 
-from core.models import PublishedModel
+from .models import Category, IceCream, Topping, Wrapper
 
+admin.site.empty_value_display = 'Не задано'
 
-class Category(PublishedModel):
-    title = models.CharField('Название', max_length=256)
-    slug = models.SlugField('Слаг', max_length=64, unique=True)
-    output_order = models.PositiveSmallIntegerField('Порядок вывода', default=100)
+class IceCreamInline(admin.StackedInline):
+    model = IceCream
+    extra = 0
 
-    class Meta:
-        verbose_name = 'категория'
-        verbose_name_plural = 'Категории'
-        
-    def __str__(self):
-        return self.title 
-
-class Topping(PublishedModel):
-    title = models.CharField('Название', max_length=256)
-    slug = models.SlugField('Слаг', max_length=64, unique=True)
-
-    class Meta:
-        verbose_name = 'топпинг'
-        verbose_name_plural = 'Топпинги'
-
-    def __str__(self):
-        return self.title
-
-class Wrapper(PublishedModel):
-    title = models.CharField('Название', max_length=256)
-
-    class Meta:
-        verbose_name = 'обертка'
-        verbose_name_plural = 'Обертки'
-
-    def __str__(self):
-        return self.title
-
-class IceCream(PublishedModel):
-    title = models.CharField('Название', max_length=256)
-    description = models.TextField('Описание')
-    wrapper = models.OneToOneField(
-        Wrapper,
-        on_delete=models.SET_NULL,
-        related_name='ice_cream',
-        verbose_name='Обертка',
-        null=True,
-        blank=True,
+class CategoryAdmin(admin.ModelAdmin):
+    inlines = (
+        IceCreamInline,
     )
-    category = models.ForeignKey(
-        Category,
-        on_delete=models.CASCADE,
-        related_name='ice_creams',
-        verbose_name='Категория',
+
+class IceCreamAdmin(admin.ModelAdmin):
+    list_display = (
+        'title',
+        'description',
+        'is_published',
+        'is_on_main',
+        'category',
+        'wrapper'
     )
-    toppings = models.ManyToManyField(Topping)
-    is_on_main = models.BooleanField(default=False)
+    list_editable = (
+        'is_published',
+        'is_on_main',
+        'category'
+    )
+    search_fields = ('title',)
+    list_filter = ('is_published',)
+    list_display_links = ('title',)
+    filter_horizontal = ('toppings',)
 
-    class Meta:
-        verbose_name = 'мороженое'
-        verbose_name_plural = 'Мороженое'
-
-    def __str__(self):
-        return self.title
-
+# Регистрируем класс с настройками админки для моделей IceCream и Category:
+admin.site.register(IceCream, IceCreamAdmin)
+admin.site.register(Category, CategoryAdmin)
+# Регистрируем модели Topping и Wrapper, 
+# чтобы ими можно было управлять через админку
+# (интерфейс админки для этих моделей останется стандартным):
+admin.site.register(Topping)
+admin.site.register(Wrapper) 
