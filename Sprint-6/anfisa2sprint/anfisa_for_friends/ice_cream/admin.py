@@ -2,7 +2,8 @@ from django.contrib import admin
 
 from .models import Category, IceCream, Topping, Wrapper
 
-# Подготавливаем модель IceCream для вставки на страницу другой модели.
+admin.site.empty_value_display = 'Не задано'
+
 class IceCreamInline(admin.StackedInline):
     model = IceCream
     extra = 0
@@ -11,14 +12,8 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = (
         IceCreamInline,
     )
-    list_display = (
-        'title',        
-    )
 
-admin.site.register(Category, CategoryAdmin) 
-
-# Создаём класс, в котором будем описывать настройки админки:
-class IceCreamAdmin(admin.ModelAdmin):  
+class IceCreamAdmin(admin.ModelAdmin):
     list_display = (
         'title',
         'description',
@@ -31,15 +26,17 @@ class IceCreamAdmin(admin.ModelAdmin):
         'is_published',
         'is_on_main',
         'category'
-    )    
-    search_fields = ('title',) 
-    list_filter = ('category',)
+    )
+    search_fields = ('title',)
+    list_filter = ('is_published',)
     list_display_links = ('title',)
-    # Указываем, для каких связанных моделей нужно включить такой интерфейс:
     filter_horizontal = ('toppings',)
 
-# Регистрируем новый класс: 
-# указываем, что для отображения админки модели IceCream
-# вместо стандартного класса нужно использовать класс IceCreamAdmin 
+# Регистрируем класс с настройками админки для моделей IceCream и Category:
 admin.site.register(IceCream, IceCreamAdmin)
-admin.site.empty_value_display = 'Не задано' 
+admin.site.register(Category, CategoryAdmin)
+# Регистрируем модели Topping и Wrapper, 
+# чтобы ими можно было управлять через админку
+# (интерфейс админки для этих моделей останется стандартным):
+admin.site.register(Topping)
+admin.site.register(Wrapper) 

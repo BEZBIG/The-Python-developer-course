@@ -1,42 +1,65 @@
-from django.contrib import admin
+from django.db import models
 
-from .models import Category, IceCream, Topping, Wrapper
+from core.models import PublishedModel
 
-admin.site.empty_value_display = 'Не задано'
 
-class IceCreamInline(admin.StackedInline):
-    model = IceCream
-    extra = 0
+class Category(PublishedModel):
+    title = models.CharField('Название', max_length=256, help_text='Уникальное название обёртки, не более 256 символов')
+    slug = models.SlugField('Слаг', max_length=64, unique=True)
+    output_order = models.PositiveSmallIntegerField('Порядок вывода', default=100)
 
-class CategoryAdmin(admin.ModelAdmin):
-    inlines = (
-        IceCreamInline,
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'Категории'
+        
+    def __str__(self):
+        return self.title 
+
+class Topping(PublishedModel):
+    title = models.CharField('Название', max_length=256, help_text='Уникальное название топпинга, не более 256 символов')
+    slug = models.SlugField('Слаг', max_length=64, unique=True)
+
+    class Meta:
+        verbose_name = 'топпинг'
+        verbose_name_plural = 'Топпинги'
+
+    def __str__(self):
+        return self.title
+
+class Wrapper(PublishedModel):
+    title = models.CharField('Название', max_length=256, help_text='Уникальное название обёртки, не более 256 символов')
+
+    class Meta:
+        verbose_name = 'обертка'
+        verbose_name_plural = 'Обертки'
+
+    def __str__(self):
+        return self.title
+
+class IceCream(PublishedModel):
+    title = models.CharField('Название', max_length=256, help_text='Уникальное название мороженого, не более 256 символов')
+    description = models.TextField('Описание')
+    wrapper = models.OneToOneField(
+        Wrapper,
+        on_delete=models.SET_NULL,
+        related_name='ice_cream',
+        verbose_name='Обертка',
+        null=True,
+        blank=True,
     )
-
-class IceCreamAdmin(admin.ModelAdmin):
-    list_display = (
-        'title',
-        'description',
-        'is_published',
-        'is_on_main',
-        'category',
-        'wrapper'
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE,
+        related_name='ice_creams',
+        verbose_name='Категория',
     )
-    list_editable = (
-        'is_published',
-        'is_on_main',
-        'category'
-    )
-    search_fields = ('title',)
-    list_filter = ('is_published',)
-    list_display_links = ('title',)
-    filter_horizontal = ('toppings',)
+    toppings = models.ManyToManyField(Topping)
+    is_on_main = models.BooleanField(default=False)
 
-# Регистрируем класс с настройками админки для моделей IceCream и Category:
-admin.site.register(IceCream, IceCreamAdmin)
-admin.site.register(Category, CategoryAdmin)
-# Регистрируем модели Topping и Wrapper, 
-# чтобы ими можно было управлять через админку
-# (интерфейс админки для этих моделей останется стандартным):
-admin.site.register(Topping)
-admin.site.register(Wrapper) 
+    class Meta:
+        verbose_name = 'мороженое'
+        verbose_name_plural = 'Мороженое'
+
+    def __str__(self):
+        return self.title
+
