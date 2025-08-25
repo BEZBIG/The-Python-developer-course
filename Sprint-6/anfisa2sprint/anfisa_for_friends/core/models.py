@@ -7,3 +7,5 @@ class PublishedModel(models.Model):
 
     class Meta:
         abstract = True
+        verbose_name = 'Опубликовать'
+        verbose_name_plural = 'Опубликовано'
