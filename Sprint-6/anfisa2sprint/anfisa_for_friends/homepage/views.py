@@ -7,7 +7,7 @@ from ice_cream.models import IceCream
 def index(request):
     template_name = 'homepage/index.html'
     ice_cream_list = IceCream.objects.values(
-        'title', 'description'
+        'id', 'title', 'category__title'
     ).filter(
         Q(is_on_main=True)
         & Q(is_published=True)
