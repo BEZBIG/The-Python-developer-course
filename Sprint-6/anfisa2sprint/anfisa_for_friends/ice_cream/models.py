@@ -56,6 +56,9 @@ class IceCream(PublishedModel):
     toppings = models.ManyToManyField(Topping)
     is_on_main = models.BooleanField(default=False)
 
+    output_order = models.PositiveSmallIntegerField('Порядок вывода', default=100)
+    price = models.DecimalField(max_digits=5, decimal_places=2) 
+
     class Meta:
         verbose_name = 'мороженое'
         verbose_name_plural = 'Мороженое'
